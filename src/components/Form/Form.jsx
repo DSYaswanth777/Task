@@ -1,51 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "reactstrap";
 import "../scss/Form.css";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import schema from "../../formSchema";
 export default function App() {
-  const schema = yup.object().shape({
-    name: yup
-      .string()
-      .matches(/^[a-zA-Z ]+$/, {
-        message: "*letters and spaces",
-      })
-      .required(),
-    dateOfBirth: yup
-      .string()
-      .matches(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/, {
-        message: "*must be dd/mm/yyyy format",
-      })
-      .required(),
-    sex: yup.string().required(),
-    mobileNumber: yup.string().matches(/^((\+)?(\d{2}[-])?(\d{10}){1})?$/, {
-      message: "Mobile number must be an Indian number",
-    }),
 
-    govtId: yup.string(),
-
-    garudian: yup.string(),
-    email: yup.string().matches(/^[\w.-]+@[a-zA-Z0-9_-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email must be Valid",
-    }),
-    emergencyContactNumber: yup
-      .string()
-      .matches(/^((\+)?(\d{2}[-])?(\d{10}){1})?$/, {
-        message: "Emergency contact number must be an Indian number",
-      }),
-    address: yup.string(),
-    state: yup.string(),
-    city: yup.string(),
-    country: yup.string(),
-    pinCode: yup
-      .string(),
-    religion: yup.string(),
-    martialStatus: yup.string(),
-    bloodGroup: yup.string(),
-    nationality: yup.string(),
+  const [formData, setFormData] = useState({
+    name: '',
+    dateOfBirth: '',
+    sex: '',
+    mobileNumber: '',
+    govtId: '',
+    garudian: '',
+    email: '',
+    emergencyContactNumber: '',
+    address: '',
+    state: '',
+    city: '',
+    country: '',
+    pinCode: '',
+    religion: '',
+    martialStatus: '',
+    bloodGroup: '',
+    nationality: '',
   });
-
   const {
     register,
     handleSubmit,
@@ -55,11 +34,27 @@ export default function App() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (e) =>{ 
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+    fetch('http://localhost:5000/api/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  }
   console.log(errors);
-
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
       <div className="container mt-5">
         <h4 className="mb-3">Personal Details</h4>
         <div className="d-flex justify-content-between mb-5">
@@ -271,8 +266,7 @@ export default function App() {
             <input
               type="number"
               name="pinCode"
-              min={6}
-              max={6}
+           
               placeholder="Enter Pin code"
               {...register("pinCode", { required: false })}
             />

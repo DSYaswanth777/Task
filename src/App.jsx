@@ -9,8 +9,8 @@ function App() {
 
   return (
     <>
-{/* <FormData/>
- */}
+<FormData/>
+
  <Table/>
     </>
   )
