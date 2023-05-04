@@ -1,15 +1,13 @@
-import { useState } from 'react'
 
-import FormData from "./components/Form/Form"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Table  from './components/Table/Table';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import AppRoutes from "./Routes/Route";
 function App() {
   return (
     <>
-<FormData/>
-
- <Table/>
+      <ToastContainer />
+      <AppRoutes />
     </>
   )
 }

@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+//**React Imports */
+import React, { useEffect, useState } from "react";
+//**React Hook Form Imports */
 import { useForm, Controller } from "react-hook-form";
+//**React Strap components import */
 import { Button } from "reactstrap";
-import "../scss/Form.css";
+//**External css import */
+import "../../assets/css/Form.css";
+//**Importing Yup resolver for reac-hook-form with yup validation */
 import { yupResolver } from "@hookform/resolvers/yup";
+//**Importing Form Schema */
 import schema from "../../formSchema";
-export default function App() {
+import { toast } from "react-toastify";
 
+export default function FormData() {
+  //**State for option selection */
+  const [selectedOption, setSelectedOption] = useState("");
+//**Form Data state intilaztion */
   const [formData, setFormData] = useState({
     name: '',
     dateOfBirth: '',
     sex: '',
     mobileNumber: '',
-    govtId: '',
     guardian: '',
     email: '',
     emergencyContactNumber: '',
@@ -24,8 +33,11 @@ export default function App() {
     martialStatus: '',
     bloodGroup: '',
     nationality: '',
-    guardianDetail:""
+    guardianDetail: "",
+    input: "",
+    type: ""
   });
+  //**Use Form Intilaztion and it's methods */
   const {
     register,
     handleSubmit,
@@ -34,8 +46,13 @@ export default function App() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
-  const onSubmit = (e) =>{ 
+//**Options for Govt Issued ID */
+  const options = [
+    { label: "Aadhar", value: "aadhar" },
+    { label: "PAN", value: "pan" }
+  ];
+//**Submit handler */
+  const onSubmit = (e) => {
     if (e && e.preventDefault) {
       e.preventDefault();
     }
@@ -47,35 +64,53 @@ export default function App() {
       body: JSON.stringify(formData)
     })
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => {
+        console.log(data)
+        toast.success('Data saved successfully!');
+      })
       .catch(error => console.error(error));
   }
-  console.log(formData);
+  //**Handle Change function for onchange function */
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
+  //**Key press actions */
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault();
+        handleSubmit(onSubmit)();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleSubmit, onSubmit,]);
   return (
     <form onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
-      <div className="container mt-5">
+      <div className="container mt-5 bg-light p-4 rounded">
+        {/* Personal Details */}
         <h4 className="mb-3">Personal Details</h4>
-        <div className="d-flex justify-content-between mb-5">
+        <div className="d-flex gap-3 mb-3">
           <div>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name" className="labelTxt me-3 ">Name</label>
             <input
               type="text"
               placeholder="Name"
               {...register("name", { required: true })}
+              style={{ width: "350px" }}
+              className='me-2'
             />
             {errors.name && (
               <span className="error text-danger">{errors.name.message}</span>
             )}
           </div>
           <div>
-            <label htmlFor="dob">Date of Birth or Age</label>
+            <label htmlFor="dob" className="labelTxt me-3 ">Date of Birth or Age</label>
             <input
               type="text"
-              placeholder="Date Of Birth"
+              placeholder="Date Of Birth or Age in years"
               {...register("dateOfBirth", { required: true })}
+              style={{ width: "220px" }}
             />
             {errors.dateOfBirth && (
               <span className="error text-danger">
@@ -84,14 +119,17 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="sex">Sex</label>
+            <label htmlFor="sex" className="labelTxt me-3">Sex</label>
             <Controller
               name="sex"
               control={control}
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <select {...field}>
+                <select {...field}
+                  style={{ width: "150px" }}
+
+                >
                   <option value="">Enter Sex </option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -103,8 +141,12 @@ export default function App() {
               <span className="error text-danger">{errors.sex.message}</span>
             )}
           </div>
+
+
+        </div>
+        <div className="d-flex mb-3 gap-3">
           <div>
-            <label htmlFor="">Mobile</label>
+            <label htmlFor="tel" className="labelTxt me-3">Mobile</label>
             <input
               type="tel"
               placeholder="Mobile number"
@@ -117,37 +159,32 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="govtId">Govt Issued ID</label>
-            <Controller
-              name="govtId"
-              control={control}
-              defaultValue=""
-              rules={{ required: false }}
-              render={({ field }) => (
-                <select {...field}>
-                  <option value="">ID Type</option>
-                  <option value="aadhar">Aadhar</option>
-                  <option value="pan">Pan</option>
-                </select>
-              )}
+            <label className="labelTxt me-2">Govt Issued ID</label>
+            <select {...register("type")} defaultValue="" onChange={(e) => setSelectedOption(e.target.value)} className='me-2'>
+              <option value="" disabled>ID Type</option>
+              {options.map(({ label, value }) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <input type="text" {...register("input")}
+            style={{width:"250px"}}
+              placeholder={selectedOption === "aadhar" ? "Enter 12 digit Aadhar number" : "Enter 10 character PAN number"}
             />
-            {errors.govtId && (
-              <span className="error text-danger">{errors.govtId.message}</span>
-            )}
-            <input />
+            {errors.input && <span className="text-danger">{errors.input.message}</span>}
           </div>
         </div>
+        {/* Contact Details */}
         <h4 className="mb-3">Contact Details</h4>
-        <div className="d-flex justify-content-between mb-5">
+        <div className="d-flex justify-content-between mb-3">
           <div>
-              <label>Guardian</label>
-              <Controller
+            <label className="labelTxt me-2">Guardian</label>
+            <Controller
               name="guardian"
               control={control}
               defaultValue=""
               rules={{ required: false }}
               render={({ field }) => (
-                <select {...field}>
+                <select {...field} className='me-2'>
                   <option value="">Enter Type</option>
                   <option value="mother">Mother</option>
                   <option value="father">Father</option>
@@ -159,20 +196,20 @@ export default function App() {
                 </select>
               )}
             />
-                 <input
+            <input
               type="text"
-              placeholder="Guardian Detail"
+              placeholder="Enter Guardian Name"
               {...register("guardianDetail", { required: false })}
             />
-                   {errors.guardianDetail && (
+            {errors.guardianDetail && (
               <span className="error text-danger">{errors.guardianDetail.message}</span>
             )}
           </div>
           <div>
-            <label>Email</label>
+            <label className="labelTxt me-2">Email</label>
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Enter Email"
               {...register("email", { required: false })}
             />
             {errors.email && (
@@ -180,10 +217,10 @@ export default function App() {
             )}
           </div>
           <div>
-            <label>Emergency Contact Number</label>
+            <label className="labelTxt me-2">Emergency Contact Number</label>
             <input
               type="number"
-              placeholder="Emergency Contact Number"
+              placeholder="Enter emergency No"
               {...register("emergencyContactNumber", { required: false })}
             />
             {errors.emergencyContactNumber && (
@@ -193,10 +230,11 @@ export default function App() {
             )}
           </div>
         </div>
+        {/* Address Details */}
         <h4 className="mb-3">Address Details</h4>
-        <div className="d-flex justify-content-between mb-5">
+        <div className="d-flex gap-3 mb-3">
           <div>
-            <label htmlFor="address">Address</label>
+            <label htmlFor="address" className="labelTxt me-2">Address</label>
             <input
               type="text"
               placeholder="Address"
@@ -209,7 +247,7 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="state">State</label>
+            <label htmlFor="state" className="labelTxt me-2">State</label>
             <Controller
               name="state"
               control={control}
@@ -228,7 +266,7 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="city">City</label>
+            <label htmlFor="city" className="labelTxt me-2">City</label>
             <Controller
               name="city"
               control={control}
@@ -246,48 +284,53 @@ export default function App() {
               <span className="error text-danger">{errors.city.message}</span>
             )}
           </div>
-          <div>
-            <label htmlFor="country">Country</label>
-            <Controller
-              name="country"
-              control={control}
-              defaultValue=""
-              rules={{ required: false }}
-              render={({ field }) => (
-                <select {...field}>
-                  <option value="">Select Country</option>
-                  <option value="india">India</option>
-                  <option value="china">China</option>
-                </select>
-              )}
-            />
+        </div>
+        <div>
+          <div className="d-flex gap-3 mb-3">
+
+            <div>
+              <label htmlFor="country" className="labelTxt me-2">Country</label>
+              <Controller
+                name="country"
+                control={control}
+                defaultValue=""
+                rules={{ required: false }}
+                render={({ field }) => (
+                  <select {...field}>
+                    <option value="">Select Country</option>
+                    <option value="india">India</option>
+                    <option value="china">China</option>
+                  </select>
+                )}
+              />
+            </div>
             {errors.country && (
               <span className="error text-danger">
                 {errors.country.message}
               </span>
             )}
-          </div>
-          <div>
-            <label>Pincode</label>
+            <div>
+              <label className="labelTxt me-2">Pincode</label>
+              <input
+                type="number"
+                name="pinCode"
 
-            <input
-              type="number"
-              name="pinCode"
-           
-              placeholder="Enter Pin code"
-              {...register("pinCode", { required: false })}
-            />
-            {errors.pinCode && (
-              <span className="error text-danger">
-                {errors.pinCode.message}
-              </span>
-            )}
+                placeholder="Enter Pin code"
+                {...register("pinCode", { required: false })}
+              />
+              {errors.pinCode && (
+                <span className="error text-danger">
+                  {errors.pinCode.message}
+                </span>
+              )}
+            </div>
           </div>
         </div>
+        {/* Other Details */}
         <h4 className="mb-3">Other Details</h4>
-        <div className="d-flex justify-content-between mb-5">
+        <div className="d-flex justify-content-between mb-3">
           <div>
-            <label htmlFor="occupation">Occupation</label>
+            <label htmlFor="occupation" className="labelTxt me-2">Occupation</label>
             <input
               type="text"
               placeholder="Enter Occupation"
@@ -300,7 +343,7 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="religion">Religion</label>
+            <label htmlFor="religion" className="labelTxt me-2">Religion</label>
             <Controller
               name="religion"
               control={control}
@@ -321,7 +364,7 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="martialStatus">Martial Status</label>
+            <label htmlFor="martialStatus" className="labelTxt me-2">Martial Status</label>
             <Controller
               name="martialStatus"
               control={control}
@@ -342,14 +385,14 @@ export default function App() {
             )}
           </div>
           <div>
-            <label htmlFor="bloodGroup">Blood Group</label>
+            <label htmlFor="bloodGroup" className="labelTxt me-2">Blood Group</label>
             <Controller
               name="bloodGroup"
               control={control}
               defaultValue=""
               rules={{ required: false }}
               render={({ field }) => (
-                <select {...field}>
+                <select {...field} style={{width:"100px"}}>
                   <option value="">Group</option>
                   <option value="A+">A+</option>
                   <option value="B+">B+</option>
@@ -362,33 +405,34 @@ export default function App() {
               </span>
             )}
           </div>
-          <div>
-            <label htmlFor="nationality">Nationality</label>
-            <Controller
-              name="nationality"
-              control={control}
-              defaultValue=""
-              rules={{ required: false }}
-              render={({ field }) => (
-                <select {...field}>
-                  <option value="">Country</option>
-                  <option value="india">India</option>
-                  <option value="china">China</option>
-                </select>
-              )}
-            />
-            {errors.nationality && (
-              <span className="error text-danger">
-                {errors.nationality.message}
-              </span>
-            )}
-          </div>
         </div>
+        <div>
+          <label htmlFor="nationality" className="labelTxt me-2">Nationality</label>
+          <Controller
+            name="nationality"
+            control={control}
+            defaultValue=""
+            rules={{ required: false }}
+            render={({ field }) => (
+              <select {...field}>
+                <option value="">Country</option>
+                <option value="india">India</option>
+                <option value="china">China</option>
+              </select>
+              
+            )}
+          />
+          {errors.nationality && (
+            <span className="error text-danger">
+              {errors.nationality.message}
+            </span>
+          )}
+        </div>
+        {/* Buttons */}
+        
         <div className="d-flex gap-3 justify-content-end mt-3">
           <Button color="danger" outline>
             Cancel
-            <br />
-            (Esc)
           </Button>
           <Button type="submit" color="success">
             Submit <br />

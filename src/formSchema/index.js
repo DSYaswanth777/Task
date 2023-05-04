@@ -1,3 +1,4 @@
+//**Importing Yup libarary */
 import * as yup from "yup";
 
 const schema = yup.object().shape({
@@ -8,28 +9,27 @@ const schema = yup.object().shape({
     })
     .required(),
   dateOfBirth: yup
-    .string()
-    .matches(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/, {
-      message: "*must be dd/mm/yyyy format",
-    })
+  .mixed()
+  .test('isValid', 'Invalid date of birth', (value) => {
+    if (!value) {
+      return false;
+    }
+    const isDobValid = /^\d{2}\/\d{2}\/\d{4}$/.test(value) || /^[1-9][0-9]{0,1}$/.test(value);
+    if (!isDobValid) {
+      return false;
+    }
+    return true;
+  })
     .required(),
   sex: yup.string().required(),
   mobileNumber: yup.string().matches(/^((\+)?(\d{2}[-])?(\d{10}){1})?$/, {
     message: "Mobile number must be an Indian number",
   }),
-  idType: yup.string().required("Please select an ID type"),
-  idNumber: yup.string().when("idType", {
+  type: yup.string(),
+  input: yup.string().when("type", {
     is: "aadhar",
-    then: yup
-      .string()
-      .matches(/^\d{12}$/, "Aadhar number must be 12 digits")
-      .required("Please enter Aadhar number"),
-    otherwise: yup
-      .string()
-      .matches(
-        /^[A-Z\d]{10}$/,
-        "PAN number must be 10 alphanumeric characters in uppercase"
-      ),
+    then: () => yup.string().matches(/^\d{12}$/,{message:"must 12 digit aadhar number"}),
+    otherwise:()=> yup.string().matches(/^[A-Za-z0-9]{10}$/,{message:"10 Digit Pan card"})
   }),
   guardian: yup.string(),
   guardianDetail: yup.string().matches(/^[a-zA-Z ]+$/, {

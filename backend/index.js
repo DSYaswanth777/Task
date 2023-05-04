@@ -1,6 +1,10 @@
+//** Express */
 const express = require("express");
+//**Body parser */
 const bodyParser = require("body-parser");
+//**Mongoose */
 const mongoose = require("mongoose");
+
 const app = express();
 const cors = require('cors')
 app.use(cors({
@@ -18,7 +22,7 @@ const dataSchema = new mongoose.Schema({
   dateOfBirth: String,
   sex: String,
   mobileNumber: String,
-  govtId: String,
+  input: String,
   guardian: String,
   guardianDetail: String,
   email: String,
@@ -32,6 +36,7 @@ const dataSchema = new mongoose.Schema({
   martialStatus: String,
   bloodGroup: String,
   nationality: String,
+  type:String
 });
 
   
@@ -55,13 +60,14 @@ app.post("/api-data", async (req, res) => {
   data.bloodGroup = req.body.bloodGroup
   data.nationality = req.body.nationality
   data.country = req.body.country
-  data.govtId = req.body.govtId
+  data.input = req.body.input
   data.martialStatus = req.body.martialStatus
   data.emergencyContactNumber = req.body.emergencyContactNumber
   data.address = req.body.address
   data.state=req.body.state
   data.guardian=req.body.guardian
   data.guardianDetail =req.body.guardianDetail
+  data.type =req.body.type
   const doc = await data.save()
   console.log(doc)
   res.json(doc)
