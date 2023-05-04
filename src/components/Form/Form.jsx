@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 //**React Strap components import */
 import { Button } from "reactstrap";
-//**External css import */
+//**External css import for styling*/
 import "../../assets/css/Form.css";
 //**Importing Yup resolver for reac-hook-form with yup validation */
 import { yupResolver } from "@hookform/resolvers/yup";
