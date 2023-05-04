@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import $ from 'jquery';
-import 'datatables.net-dt/css/jquery.dataTables.css';
-import 'datatables.net-buttons-dt/css/buttons.dataTables.css';
-import 'datatables.net-buttons/js/dataTables.buttons';
-import 'datatables.net-buttons-dt';
+import React, { useEffect, useRef, useState } from "react";
+import $ from "jquery";
+import "datatables.net-dt/css/jquery.dataTables.css";
+import "datatables.net-buttons-dt/css/buttons.dataTables.css";
+import "datatables.net-buttons/js/dataTables.buttons";
+import "datatables.net-buttons-dt";
 function MyTable(props) {
   const tableRef = useRef(null);
 
@@ -12,7 +12,10 @@ function MyTable(props) {
       data: props.data,
       columns: props.columns,
       responsive: true,
-      lengthMenu: [[25, 50, 100, -1], [25, 50, 100, 'All']],
+      lengthMenu: [
+        [25, 50, 100, -1],
+        [25, 50, 100, "All"],
+      ],
       pageLength: 25,
     });
     return () => {
@@ -24,7 +27,7 @@ function MyTable(props) {
     <table
       ref={tableRef}
       className="display responsive nowrap"
-      style={{ width: '100%' }}
+      style={{ width: "100%" }}
     ></table>
   );
 }
@@ -33,30 +36,34 @@ const Table = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/data')
-      .then(response => response.json())
-      .then(data => setData(data))
-      .catch(error => console.error(error));
+    fetch("http://localhost:5000/api-data")
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error(error));
   }, []);
-
+  console.log("Table", data);
   const columns = [
-    { title: 'Name', data: 'name' },
-    { title: 'Date of Birth', data: 'dateOfBirth' },
-    { title: 'Sex', data: 'sex' },
-    { title: 'Mobile Number', data: 'mobileNumber' },
-    { title: 'Govt ID', data: 'govtId' },
-    { title: 'Guardian', data: 'garudian' },
-    { title: 'Email', data: 'email' },
-    { title: 'Emergency Contact Number', data: 'emergencyContactNumber' },
-    { title: 'Address', data: 'address' },
-    { title: 'State', data: 'state' },
-    { title: 'City', data: 'city' },
-    { title: 'Country', data: 'country' },
-    { title: 'Pin Code', data: 'pinCode' },
-    { title: 'Religion', data: 'religion' },
-    { title: 'Martial Status', data: 'martialStatus' },
-    { title: 'Blood Group', data: 'bloodGroup' },
-    { title: 'Nationality', data: 'nationality' },
+    { title: "Name", data: "name" },
+    { title: "Date of Birth", data: "dateOfBirth" },
+    { title: "Sex", data: "sex" },
+    { title: "Mobile Number", data: "mobileNumber", defaultContent: "-" },
+    { title: "Govt ID", data: "govtId", defaultContent: "-" },
+    { title: "Guardian Detail", data: "guardianDetail", defaultContent: "-" },
+    { title: "Email", data: "email" },
+    {
+      title: "Emergency Contact Number",
+      data: "emergencyContactNumber",
+      defaultContent: "-",
+    },
+    { title: "Address", data: "address", defaultContent: "-" },
+    { title: "State", data: "state", defaultContent: "-" },
+    { title: "City", data: "city", defaultContent: "-" },
+    { title: "Country", data: "country", defaultContent: "-" },
+    { title: "Pin Code", data: "pinCode", defaultContent: "-" },
+    { title: "Religion", data: "religion", defaultContent: "-" },
+    { title: "Martial Status", data: "martialStatus", defaultContent: "-" },
+    { title: "Blood Group", data: "bloodGroup", defaultContent: "-" },
+    { title: "Nationality", data: "nationality", defaultContent: "-" },
   ];
 
   return (

@@ -12,7 +12,7 @@ export default function App() {
     sex: '',
     mobileNumber: '',
     govtId: '',
-    garudian: '',
+    guardian: '',
     email: '',
     emergencyContactNumber: '',
     address: '',
@@ -24,6 +24,7 @@ export default function App() {
     martialStatus: '',
     bloodGroup: '',
     nationality: '',
+    guardianDetail:""
   });
   const {
     register,
@@ -38,7 +39,7 @@ export default function App() {
     if (e && e.preventDefault) {
       e.preventDefault();
     }
-    fetch('http://localhost:5000/api/data', {
+    fetch('http://localhost:5000/api-data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -49,7 +50,7 @@ export default function App() {
       .then(data => console.log(data))
       .catch(error => console.error(error));
   }
-  console.log(errors);
+  console.log(formData);
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
@@ -139,27 +140,33 @@ export default function App() {
         <h4 className="mb-3">Contact Details</h4>
         <div className="d-flex justify-content-between mb-5">
           <div>
-            <label htmlFor="garudian">Garudian Details</label>
-            <Controller
-              name="garudian"
+              <label>Guardian</label>
+              <Controller
+              name="guardian"
               control={control}
               defaultValue=""
               rules={{ required: false }}
               render={({ field }) => (
                 <select {...field}>
-                  <option value="">Enter Label</option>
+                  <option value="">Enter Type</option>
                   <option value="mother">Mother</option>
                   <option value="father">Father</option>
-                  <option value="other">Other</option>
+                  <option value="stepFather">Step Father</option>
+                  <option value="stepFather">Step Mother</option>
+                  <option value="grandMother">Grand Mother</option>
+                  <option value="grandFather">Grand Father</option>
+                  <option value="legalGuardian">Grand Mother</option>
                 </select>
               )}
             />
-            {errors.garudian && (
-              <span className="error text-danger">
-                {errors.garudian.message}
-              </span>
+                 <input
+              type="text"
+              placeholder="Guardian Detail"
+              {...register("guardianDetail", { required: false })}
+            />
+                   {errors.guardianDetail && (
+              <span className="error text-danger">{errors.guardianDetail.message}</span>
             )}
-            {/* <input /> */}
           </div>
           <div>
             <label>Email</label>
@@ -248,7 +255,7 @@ export default function App() {
               rules={{ required: false }}
               render={({ field }) => (
                 <select {...field}>
-                  <option value="">India</option>
+                  <option value="">Select Country</option>
                   <option value="india">India</option>
                   <option value="china">China</option>
                 </select>
