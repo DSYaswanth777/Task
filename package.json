@@ -10,15 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
     "bootstrap": "^5.2.3",
+    "datatables.net": "^1.13.4",
+    "datatables.net-buttons-dt": "^2.3.6",
+    "datatables.net-dt": "^1.13.4",
+    "datatables.net-responsive-dt": "^2.4.1",
+    "jquery": "^3.6.4",
     "react": "^18.2.0",
     "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
+    "react-router-dom": "^6.11.1",
     "react-select": "^5.7.3",
-    "reactstrap": "^9.1.9"
+    "react-toastify": "^9.1.2",
+    "reactstrap": "^9.1.9",
+    "yup": "^1.1.1"
   },
   "devDependencies": {
+    "@types/datatables.net-buttons": "^1.4.7",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",

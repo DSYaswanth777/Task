@@ -1,14 +1,13 @@
-import { useState } from 'react'
-
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import AppRoutes from "./Routes/Route";
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-
+      <ToastContainer />
+      <AppRoutes />
     </>
   )
 }
