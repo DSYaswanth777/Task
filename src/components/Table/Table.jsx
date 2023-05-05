@@ -6,6 +6,8 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-buttons-dt/css/buttons.dataTables.css";
 import "datatables.net-buttons/js/dataTables.buttons";
 import "datatables.net-buttons-dt";
+//**API URL constant import */
+import { APIURLPOST } from "../../Constants";
 //**Table function */
 function MyTable(props) {
   //**Ref */
@@ -68,7 +70,7 @@ const Table = (props) => {
   const [data, setData] = useState([]);
 //**API calling to fetch the Data */
   useEffect(() => {
-    fetch("http://localhost:5000/api-data")
+    fetch(APIURLPOST)
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error(error));

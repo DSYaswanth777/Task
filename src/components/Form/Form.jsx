@@ -10,7 +10,10 @@ import "../../assets/css/Form.css";
 import { yupResolver } from "@hookform/resolvers/yup";
 //**Importing Form Schema */
 import schema from "../../formSchema";
+//**TOast message import */
 import { toast } from "react-toastify";
+//**URL COnstant */
+import { APIURLPOST } from "../../Constants";
 
 export default function FormData() {
   //**State for option selection */
@@ -56,7 +59,7 @@ export default function FormData() {
     if (e && e.preventDefault) {
       e.preventDefault();
     }
-    fetch('http://localhost:5000/api-data', {
+    fetch(APIURLPOST, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
