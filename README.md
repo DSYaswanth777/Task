@@ -11,6 +11,7 @@
 * npm run dev
 ## Running the Backend
 * To run the backend server, navigate to the backend directory and run the following command:
+* node index.js
 
 * This will start the backend server and allow you to interact with the app's API endpoints.
 ## Libraries Used
